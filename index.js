@@ -9,7 +9,7 @@ const URL = require("./model/url");
 const urlRoute = require("./routes/url");
 const userRoute = require("./routes/user");
 const staticRoute = require("./routes/staticRouter");
-const { restrictToLoggedInUserOnly, checkAuth } = require("./middleware/auth");
+const { checkForAuthentication, restrictTo } = require("./middleware/auth");
 
 const app = express();
 const PORT = 8001;
@@ -26,11 +26,12 @@ app.set("views", path.resolve("./views"));
 app.use(express.json()); // middleware for json object
 app.use(express.urlencoded({ extended: false })); //middleware for form data
 app.use(cookieParser());
+app.use(checkForAuthentication); // auth middleware
 
 // routes:
-app.use("/url", restrictToLoggedInUserOnly, urlRoute);
+app.use("/url", restrictTo(["NORMAL"]), urlRoute);
 app.use("/user", userRoute);
-app.use("/", checkAuth, staticRoute); // SSR route:
+app.use("/", staticRoute); // SSR route:
 
 // route for redirect-url:
 app.get("/url/:shortId", async (req, res) => {

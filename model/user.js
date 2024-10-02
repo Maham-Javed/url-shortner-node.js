@@ -11,6 +11,11 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    role: {
+      type: String,
+      require: true,
+      default: "NORMAL",
+    },
     passward: {
       type: String,
       required: true,
